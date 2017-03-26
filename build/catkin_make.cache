@@ -1,0 +1,2 @@
+heads
+-DCATKIN_DEVEL_PREFIX=/home/deivydas/cat_ws_head/devel -DCMAKE_INSTALL_PREFIX=/home/deivydas/cat_ws_head/install -G Unix Makefiles

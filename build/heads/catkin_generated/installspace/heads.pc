@@ -1,0 +1,8 @@
+prefix=/home/deivydas/cat_ws_head/install
+
+Name: heads
+Description: Description of heads
+Version: 0.0.0
+Cflags: -I/home/deivydas/cat_ws_head/install/include
+Libs: -L/home/deivydas/cat_ws_head/install/lib 
+Requires: 
