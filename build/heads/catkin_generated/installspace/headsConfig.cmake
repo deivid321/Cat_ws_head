@@ -68,7 +68,7 @@ set(heads_CONFIG_INCLUDED TRUE)
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
   set(heads_SOURCE_PREFIX /home/deivydas/cat_ws_head/src/heads)
-  set(heads_DEVEL_PREFIX /home/deivydas/cat_ws_head/devel)
+  set(heads_DEVEL_PREFIX /home/deivydas/cat_ws_head/devel/.private/heads)
   set(heads_INSTALL_PREFIX "")
   set(heads_PREFIX ${heads_DEVEL_PREFIX})
 else()

@@ -12,16 +12,54 @@
   <link name="world"/>
 
 
+  <link name="torse_link">
+
+    <collision name='collision'>
+      <geometry>
+	    <box size="0.5 0.5 1.6"/>
+      </geometry>
+    </collision>
+
+    <visual name='visual'>
+      <geometry>
+	    <box size="0.5 0.5 1.6"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 0" />
+      <mass value="70.0" />
+      <inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="100.0"  iyz="0.0"  izz="1.0" />
+    </inertial>
+  </link>
+
+  <joint name="torse_joint" type="floating">
+    <origin xyz="0 0 0.8" rpy="0 0 0"/>
+    <parent link="world"/>
+    <child link="torse_link"/>
+  </joint>
+
+
+
+
   <link name="base_link">
     <collision>
       <geometry>
-	    <mesh filename="file:///home/deivydas/Desktop/bolvanka/bolvanka.obj"/>
+        
+	    <mesh filename="file:////home/deivydas/Desktop/face.stl"/>
+     <!-- <uri>package://heads/models/face.stl</uri>
+      <scale>0.001 0.001 0.001</scale>
+    -->
       </geometry>
     </collision>
 
     <visual>
       <geometry>
-	    <mesh filename="file:///home/deivydas/Desktop/bolvanka/bolvanka.obj"/>
+	    <mesh filename="file:////home/deivydas/Desktop/face.stl"/>
+     <!-- <uri>package://heads/models/face.stl</uri>
+      <scale>0.001 0.001 0.001</scale>
+    -->
       </geometry>
       <material name="orange"/>
     </visual>
@@ -33,8 +71,9 @@
     </inertial>
   </link>
 
-  <joint name="base_joint" type="floating">
-    <parent link="world"/>
+  <joint name="base_joint" type="fixed">
+    <origin xyz="0 0 0.9" rpy="0 0 0"/>
+    <parent link="torse_link"/>
     <child link="base_link"/>
   </joint>
 
@@ -82,17 +121,17 @@
   </link>
 
 
-  <joint name="right_eye_joint" type="fixed">
+  <joint name="right_eye_joint" type="floating">
     <axis xyz="0 1 0" />
-    <origin xyz="${rad} ${rad} ${rad}" rpy="0 0 0"/>
+    <origin xyz="${rad} ${rad} ${rad}" rpy="0 0 1.57"/>
     <parent link="base_link"/>
     <child link="right_eye_link"/>
   </joint>
 
 
-  <joint name="left_eye_joint" type="fixed">
+  <joint name="left_eye_joint" type="floating">
     <axis xyz="0 1 0" />
-    <origin xyz="-${rad} ${rad} ${rad}" rpy="0 0 0"/>
+    <origin xyz="-${rad} ${rad} ${rad}" rpy="0 0 1.57"/>
     <parent link="base_link"/>
     <child link="left_eye_link"/>
   </joint>
@@ -153,8 +192,6 @@
     <parent link="left_eye_link"/>
     <child link="left_camera_link"/>
   </joint>
-
-
 
 
 

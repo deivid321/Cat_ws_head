@@ -1,0 +1,3 @@
+head_controller:
+    type: position_controllers/JointPositionController
+    joint: right_eye_joint

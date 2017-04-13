@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+
+<robot name="head" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:property name="width" value="0.1" />
+  <xacro:property name="height1" value="2" />
+  <xacro:property name="mass" value="5" />
+  <xacro:property name="rad" value="0.1" />
+  <xacro:property name="rad_small" value="0.01" />
+  <xacro:include filename="$(find heads)/urdf/materials.xacro" />
+  <xacro:include filename="$(find heads)/urdf/head.gazebo" />
+
+  <link name="world"/>
+
+
+  <link name="torse_link">
+
+    <collision name='collision'>
+      <geometry>
+	    <box size="0.5 0.5 1.6"/>
+      </geometry>
+    </collision>
+
+    <visual name='visual'>
+      <geometry>
+	    <box size="0.5 0.5 1.6"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 0" />
+      <mass value="70.0" />
+      <inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="100.0"  iyz="0.0"  izz="1.0" />
+    </inertial>
+  </link>
+
+  <joint name="torse_joint" type="floating">
+    <origin xyz="0 0 0.8" rpy="0 0 0"/>
+    <parent link="world"/>
+    <child link="torse_link"/>
+  </joint>
+
+
+
+
+  <link name="base_link">
+    <collision>
+      <geometry>
+        <mesh>
+	    <!-- <mesh filename="file:////home/deivydas/Desktop/face.stl"/> -->
+      <uri>package://models/face.stl</uri>
+      <scale>0.001 0.001 0.001</scale>
+    </mesh>
+      </geometry>
+    </collision>
+
+    <visual>
+      <geometry>
+	    <mesh>
+      <!-- <mesh filename="file:////home/deivydas/Desktop/face.stl"/> -->
+      <uri>package://models/face.stl</uri>
+      <scale>0.001 0.001 0.001</scale>
+    </mesh>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 0.1" />
+      <mass value="1.0" />
+      <inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="100.0"  iyz="0.0"  izz="1.0" />
+    </inertial>
+  </link>
+
+  <joint name="base_joint" type="fixed">
+    <origin xyz="0 0 0.9" rpy="0 0 0"/>
+    <parent link="torse_link"/>
+    <child link="base_link"/>
+  </joint>
+
+
+  <link name="left_eye_link">
+    <collision>
+      <geometry>
+	    <sphere radius="${rad_small}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <geometry>
+	    <sphere radius="${rad_small}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 0.1" />
+      <mass value="0.10" />
+      <inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="100.0"  iyz="0.0"  izz="1.0" />
+    </inertial>
+  </link>
+
+  <link name="right_eye_link">
+    <collision>
+      <geometry>
+	    <sphere radius="${rad_small}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <geometry>
+	    <sphere radius="${rad_small}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 0.1" />
+      <mass value="0.10" />
+      <inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="100.0"  iyz="0.0"  izz="1.0" />
+    </inertial>
+  </link>
+
+
+  <joint name="right_eye_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="${rad} ${rad} ${rad}" rpy="0 0 1.57"/>
+    <parent link="base_link"/>
+    <child link="right_eye_link"/>
+  </joint>
+
+
+  <joint name="left_eye_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="-${rad} ${rad} ${rad}" rpy="0 0 1.57"/>
+    <parent link="base_link"/>
+    <child link="left_eye_link"/>
+  </joint>
+
+
+  <link name="left_camera_link">
+    <collision>
+      <geometry>
+	    <sphere radius="${rad_small}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <geometry>
+	    <sphere radius="${rad_small}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0.1" />
+      <mass value="0.10" />
+      <inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="100.0"  iyz="0.0"  izz="1.0" />
+    </inertial>
+  </link>
+
+  <link name="right_camera_link">
+    <collision>
+      <geometry>
+	    <sphere radius="${rad_small}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <geometry>
+	    <sphere radius="${rad_small}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0.1" />
+      <mass value="0.10" />
+      <inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="100.0"  iyz="0.0"  izz="1.0" />
+    </inertial>
+  </link>
+
+
+  <joint name="right_camera_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="right_eye_link"/>
+    <child link="right_camera_link"/>
+  </joint>
+
+
+  <joint name="left_camera_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="left_eye_link"/>
+    <child link="left_camera_link"/>
+  </joint>
+
+
+
+</robot>
