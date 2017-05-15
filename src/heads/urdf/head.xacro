@@ -16,13 +16,13 @@
 
     <collision name='collision'>
       <geometry>
-	    <box size="0.5 0.5 1.6"/>
+        <mesh filename="package://heads/models/torso.dae"/>
       </geometry>
     </collision>
 
     <visual name='visual'>
       <geometry>
-	    <box size="0.5 0.5 1.6"/>
+        <mesh filename="package://heads/models/torso.dae"/>
       </geometry>
       <material name="black"/>
     </visual>
@@ -34,51 +34,80 @@
     </inertial>
   </link>
 
-  <joint name="torse_joint" type="floating">
-    <origin xyz="0 0 0.8" rpy="0 0 0"/>
+  <joint name="torse_joint" type="fixed">
+    <origin xyz="0 0 0.0" rpy="1.57 0 0"/>
     <parent link="world"/>
     <child link="torse_link"/>
   </joint>
 
 
 
+  <link name="head_yaw_link">
+    <inertial>
+      <origin xyz="0.137802209307 0.090396 0.0227196811405" rpy="0 0 0"/>
+      <mass value="0.10"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
 
-  <link name="base_link">
+  </link>
+
+  <joint name="head_yaw_joint" type="revolute">
+    <origin xyz="0 1.5 0.0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="1000.0" lower="-0.50" upper="0.5" velocity="0.5"/>
+    <parent link="torse_link"/>
+    <child link="head_yaw_link"/>
+  </joint>
+
+
+  <link name="head_pitch_link">
+    <inertial>
+      <origin xyz="0.137802209307 0.090396 0.0227196811405" rpy="0 0 0"/>
+      <mass value="0.10"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+
+  <joint name="head_pitch_joint" type="revolute">
+    <axis xyz="1 0 0"/>
+    <limit effort="1000.0" lower="-0.50" upper="0.5" velocity="0.5"/>
+    <parent link="head_yaw_link"/>
+    <child link="head_pitch_link"/>
+  </joint>
+
+
+  <link name="head_roll_link">
     <collision>
+     <origin xyz="0 -1.5 0" rpy="0 0 0" />
       <geometry>
-        
-	    <mesh filename="file:////home/deivydas/Desktop/face.stl"/>
-     <!-- <uri>package://heads/models/face.stl</uri>
-      <scale>0.001 0.001 0.001</scale>
-    -->
+        <mesh filename="package://heads/models/head.dae"/>
       </geometry>
     </collision>
 
     <visual>
+     <origin xyz="0 -1.5 0" rpy="0 0 0" />
       <geometry>
-	    <mesh filename="file:////home/deivydas/Desktop/face.stl"/>
-     <!-- <uri>package://heads/models/face.stl</uri>
-      <scale>0.001 0.001 0.001</scale>
-    -->
+        <mesh filename="package://heads/models/head.dae"/>
       </geometry>
       <material name="orange"/>
     </visual>
 
     <inertial>
       <origin xyz="0 0 0.1" />
-      <mass value="1.0" />
+      <mass value="0.010" />
       <inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="100.0"  iyz="0.0"  izz="1.0" />
     </inertial>
   </link>
 
-  <joint name="base_joint" type="fixed">
-    <origin xyz="0 0 0.9" rpy="0 0 0"/>
-    <parent link="torse_link"/>
-    <child link="base_link"/>
+  <joint name="head_roll_joint" type="revolute">
+    <axis xyz="0 0 1"/>
+    <limit effort="1000.0" lower="-0.50" upper="0.5" velocity="0.5"/>
+    <parent link="head_pitch_link"/>
+    <child link="head_roll_link"/>
   </joint>
 
 
-  <link name="left_eye_link">
+<link name="left_eye_link">
     <collision>
       <geometry>
 	    <sphere radius="${rad_small}"/>
@@ -98,6 +127,46 @@
       <inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="100.0"  iyz="0.0"  izz="1.0" />
     </inertial>
   </link>
+
+  <joint name="left_eye_joint" type="fixed">
+    <origin xyz="${rad} ${rad} ${rad}" rpy="0 0 0"/>
+    <parent link="head_roll_link"/>
+    <child link="left_eye_link"/>
+  </joint>
+
+
+  <link name="left_eye_yaw_link">
+    <inertial>
+      <origin xyz="0.137802209307 0.090396 0.0227196811405" rpy="0 0 0"/>
+      <mass value="0.10"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+
+  <joint name="left_eye_yaw_joint" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="1000.0" lower="-0.50" upper="0.5" velocity="0.5"/>
+    <parent link="left_eye_link"/>
+    <child link="left_eye_yaw_link"/>
+  </joint>
+
+  <link name="left_eye_pitch_link">
+    <inertial>
+      <origin xyz="0.137802209307 0.090396 0.0227196811405" rpy="0 0 0"/>
+      <mass value="0.10"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+
+  <joint name="left_eye_pitch_joint" type="revolute">
+    <axis xyz="1 0 0"/>
+    <limit effort="1000.0" lower="-0.50" upper="0.5" velocity="0.5"/>
+    <parent link="left_eye_yaw_link"/>
+    <child link="left_eye_pitch_link"/>
+  </joint>
+
+
+
 
   <link name="right_eye_link">
     <collision>
@@ -121,20 +190,44 @@
   </link>
 
 
-  <joint name="right_eye_joint" type="floating">
-    <axis xyz="0 1 0" />
-    <origin xyz="${rad} ${rad} ${rad}" rpy="0 0 1.57"/>
-    <parent link="base_link"/>
+
+  <joint name="right_eye_joint" type="fixed">
+    <origin xyz="-${rad} ${rad} ${rad}" rpy="0 0 0"/>
+    <parent link="head_roll_link"/>
     <child link="right_eye_link"/>
   </joint>
 
 
-  <joint name="left_eye_joint" type="floating">
-    <axis xyz="0 1 0" />
-    <origin xyz="-${rad} ${rad} ${rad}" rpy="0 0 1.57"/>
-    <parent link="base_link"/>
-    <child link="left_eye_link"/>
+  <link name="right_eye_yaw_link">
+    <inertial>
+      <origin xyz="0.137802209307 0.090396 0.0227196811405" rpy="0 0 0"/>
+      <mass value="0.10"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+
+  <joint name="right_eye_yaw_joint" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="1000.0" lower="-0.50" upper="0.5" velocity="0.5"/>
+    <parent link="right_eye_link"/>
+    <child link="right_eye_yaw_link"/>
   </joint>
+
+  <link name="right_eye_pitch_link">
+    <inertial>
+      <origin xyz="0.137802209307 0.090396 0.0227196811405" rpy="0 0 0"/>
+      <mass value="0.10"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+
+  <joint name="right_eye_pitch_joint" type="revolute">
+    <axis xyz="1 0 0"/>
+    <limit effort="1000.0" lower="-0.50" upper="0.5" velocity="0.5"/>
+    <parent link="right_eye_yaw_link"/>
+    <child link="right_eye_pitch_link"/>
+  </joint>
+
 
 
   <link name="left_camera_link">
@@ -179,20 +272,100 @@
 
 
   <joint name="right_camera_joint" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <parent link="right_eye_link"/>
+    <origin xyz="0 0 0" rpy="1.57 1.57 -3.14"/>
+    <parent link="right_eye_pitch_link"/>
     <child link="right_camera_link"/>
   </joint>
 
 
   <joint name="left_camera_joint" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <parent link="left_eye_link"/>
+    <origin xyz="0 0 0" rpy="1.57 1.57 -3.14"/>
+    <parent link="left_eye_pitch_link"/>
     <child link="left_camera_link"/>
   </joint>
 
+
+  <transmission name="head_yaw_joint_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="head_yaw_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="head_yaw_joint_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="head_pitch_joint_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="head_pitch_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="head_pitch_joint_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+
+  <transmission name="head_roll_joint_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="head_roll_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="head_roll_joint_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+
+  <transmission name="left_eye_yaw_joint_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_eye_yaw_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_eye_yaw_joint_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+
+  <transmission name="left_eye_pitch_joint_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_eye_pitch_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_eye_pitch_joint_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+
+  <transmission name="right_eye_yaw_joint_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_eye_yaw_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_eye_yaw_joint_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+
+  <transmission name="right_eye_pitch_joint_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_eye_pitch_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_eye_pitch_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
 
 
 </robot>
