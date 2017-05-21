@@ -6,6 +6,7 @@
 #include <ros/ros.h>
 #include <interactive_markers/interactive_marker_server.h>
 #include <sensor_msgs/JointState.h>
+#include <std_msgs/Float64.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <tf/transform_broadcaster.h>
 
@@ -16,6 +17,14 @@ namespace gazebo {
     private: 
     ros::NodeHandle *node_;
     ros::Publisher joint_pub_;
+    ros::Publisher head_yaw_pub_;
+    ros::Publisher head_pitch_pub_;
+    ros::Publisher left_eye_yaw_pub_;
+    ros::Publisher left_eye_pitch_pub_;
+    ros::Publisher right_eye_yaw_pub_;
+    ros::Publisher right_eye_pitch_pub_;
+
+
     sensor_msgs::JointState joint_msg_;
     tf::TransformBroadcaster broadcaster_;
     geometry_msgs::TransformStamped odom_trans_;
@@ -23,6 +32,7 @@ namespace gazebo {
     visualization_msgs::InteractiveMarker head_marker_;
     interactive_markers::InteractiveMarkerServer server_;
     math::Pose static_pose_;
+    math::Pose left_eye_static_pose_;
 
 
     physics::ModelPtr model_;
@@ -49,6 +59,8 @@ namespace gazebo {
     const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback );
     void setEyePose(const geometry_msgs::Pose);
     void setMarker();
+    void setHead(const geometry_msgs::Pose);
+    void setEyes(const geometry_msgs::Pose);
 
     /// \brief Pointer to the model.
 
