@@ -48,5 +48,11 @@ joint7_position_controller"/>
     <remap from="/joint_states" to="/head/joint_states" />
   </node>
 
+  <!---->
+  <param name="table_description"
+    command="$(find xacro)/xacro --inorder '$(find heads)/urdf/obj.xacro'" />
+  <node name="urdf_spawner_2" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model obj -param table_description -y -1.5  -Y 1.57"/>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find heads)/launch/rviz.rviz"/>
 
 </launch>
