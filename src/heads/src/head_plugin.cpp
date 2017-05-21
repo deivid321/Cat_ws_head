@@ -16,8 +16,20 @@ void HeadPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
 
     links_ = _model->GetLinks();
 
-    ROS_INFO_STREAM("a: " << links_.size() << ", " << links_[0]->GetName() << ", " << links_[1]->GetName()<< ", " << links_[2]->GetName());
+    //ROS_INFO_STREAM("a: " << links_.size() << ", " << links_[0]->GetName() << ", " << links_[1]->GetName()<< ", " << links_[2]->GetName()
+<< links_.size() << ", " << links_[3]->GetName() << ", " << links_[4]->GetName()<< ", " << links_[5]->GetName()
+<< links_.size() << ", " << links_[6]->GetName() << ", " << links_[7]->GetName());
     CreateMarker();
+
+    /*Send msgs to controller */
+    head_yaw_pub_ = node_->advertise<std_msgs::Float64>("/head/joint1_position_controller/command", 100);
+    head_pitch_pub_ = node_->advertise<std_msgs::Float64>("/head/joint2_position_controller/command", 100);
+
+    left_eye_yaw_pub_ = node_->advertise<std_msgs::Float64>("/head/joint4_position_controller/command", 100);
+    left_eye_pitch_pub_ = node_->advertise<std_msgs::Float64>("/head/joint5_position_controller/command", 100);
+
+    right_eye_yaw_pub_ = node_->advertise<std_msgs::Float64>("/head/joint6_position_controller/command", 100);
+    right_eye_pitch_pub_ = node_->advertise<std_msgs::Float64>("/head/joint7_position_controller/command", 100);
 
     update_ = event::Events::ConnectWorldUpdateBegin(boost::bind(\
                     &HeadPlugin::Update, this, _1));
@@ -27,22 +39,7 @@ void HeadPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
 }
 
 void HeadPlugin::Update(const common::UpdateInfo &_info) {
-    //ROS_INFO_STREAM("<--- ");
-    gazebo::math::Pose p0 = links_[0]->GetWorldPose();
-    gazebo::math::Pose p1 = links_[1]->GetWorldPose();
-
-    geometry_msgs::Pose pose;
-    pose.position.x = p0.pos.x;
-    pose.position.y = p0.pos.y;
-    pose.position.z = p0.pos.z;
-    pose.orientation.x = p1.rot.x;
-    pose.orientation.y = p1.rot.y;
-    pose.orientation.z = p1.rot.z;
-    pose.orientation.w = p1.rot.w;
-    setEyePose(pose);
-    
     server_.applyChanges();
-
 }
 
 void HeadPlugin::setMarker() {
@@ -60,12 +57,85 @@ void HeadPlugin::setMarker() {
 
 
 
+void HeadPlugin::setHead(const geometry_msgs::Pose p) {
+    static_pose_ = model_->GetWorldPose();
+
+
+    std_msgs::Float64 msg;
+    msg.data = atan2(p.position.x - static_pose_.pos.x, p.position.y - static_pose_.pos.y);
+    if (msg.data > 0) {
+         msg.data = M_PI - msg.data;   
+    } else {
+         msg.data = -msg.data - M_PI;   
+    }
+
+    //ROS_INFO("f.x %f f.y %f, h.x %f h.y %f -> angle %f", p.position.x, p.position.y, static_pose_.pos.x, static_pose_.pos.y, msg.data);
+    head_yaw_pub_.publish(msg);
+
+    std_msgs::Float64 msg2;
+    msg2.data = atan2(p.position.z - static_pose_.pos.z - 1.5, p.position.y - static_pose_.pos.y);
+    if (msg2.data > 0) {
+         msg2.data = -(M_PI - msg2.data);   
+    } else {
+         msg2.data = msg2.data + M_PI;   
+    }
+
+    //ROS_INFO("f.x %f f.y %f, h.x %f h.y %f -> angle %f", p.position.z, p.position.y, static_pose_.pos.z, static_pose_.pos.y, msg2.data);
+    head_pitch_pub_.publish(msg2);
+
+
+}
+
+void HeadPlugin::setEyes(const geometry_msgs::Pose p) {
+    gazebo::math::Pose p0 = links_[5]->GetWorldPose();
+
+    std_msgs::Float64 msg;
+    msg.data = atan2(p.position.x - p0.pos.x, p.position.y - p0.pos.y);
+    if (msg.data > 0) {
+         msg.data = M_PI - msg.data;   
+    } else {
+         msg.data = -msg.data - M_PI;   
+    }
+
+    left_eye_yaw_pub_.publish(msg);
+
+    std_msgs::Float64 msg2;
+    msg2.data = atan2(p.position.z - p0.pos.z, p.position.y - p0.pos.y);
+    if (msg2.data > 0) {
+         msg2.data = -(M_PI - msg2.data);   
+    } else {
+         msg2.data = msg2.data + M_PI;   
+    }
+
+    left_eye_pitch_pub_.publish(msg2);
+
+
+    gazebo::math::Pose p1 = links_[7]->GetWorldPose();
+    msg.data = atan2(p.position.x - p1.pos.x, p.position.y - p1.pos.y);
+    if (msg.data > 0) {
+         msg.data = M_PI - msg.data;   
+    } else {
+         msg.data = -msg.data - M_PI;   
+    }
+
+    right_eye_yaw_pub_.publish(msg);
+
+    msg2.data = atan2(p.position.z - p1.pos.z, p.position.y - p1.pos.y);
+    if (msg2.data > 0) {
+         msg2.data = -(M_PI - msg2.data);   
+    } else {
+         msg2.data = msg2.data + M_PI;   
+    }
+
+    right_eye_pitch_pub_.publish(msg2);
+
+}
 
 
 
 void HeadPlugin::CreateMarker() {
     odom_trans_.header.frame_id = "world";
-    odom_trans_.child_frame_id = "base_link";
+    odom_trans_.child_frame_id = "torse_link";
     odom_trans_.header.stamp = ros::Time::now();
     odom_trans_.transform.translation.x = 0;
     odom_trans_.transform.translation.y = 0;
@@ -73,7 +143,7 @@ void HeadPlugin::CreateMarker() {
     odom_trans_.transform.rotation = tf::createQuaternionMsgFromYaw(0);
 
 
-    head_marker_.header.frame_id = "base_link";
+    head_marker_.header.frame_id = "torse_link";
     head_marker_.header.stamp = ros::Time::now();
     head_marker_.name = "head_marker";
     head_marker_.description = "6-DOF Control of head";
@@ -108,9 +178,9 @@ void HeadPlugin::CreateMarker() {
     control.orientation.x = 1;
     control.orientation.y = 0;
     control.orientation.z = 0;
-    control.name = "rotate_x";
+    /*control.name = "rotate_x";
     control.interaction_mode = visualization_msgs::InteractiveMarkerControl::ROTATE_AXIS;
-    head_marker_.controls.push_back(control);
+    head_marker_.controls.push_back(control);*/
     control.name = "move_x";
     control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_AXIS;
     head_marker_.controls.push_back(control);
@@ -119,9 +189,9 @@ void HeadPlugin::CreateMarker() {
     control.orientation.x = 0;
     control.orientation.y = 1;
     control.orientation.z = 0;
-    control.name = "rotate_z";
+    /*control.name = "rotate_z";
     control.interaction_mode = visualization_msgs::InteractiveMarkerControl::ROTATE_AXIS;
-    head_marker_.controls.push_back(control);
+    head_marker_.controls.push_back(control);*/
     control.name = "move_z";
     control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_AXIS;
     head_marker_.controls.push_back(control);
@@ -130,9 +200,9 @@ void HeadPlugin::CreateMarker() {
     control.orientation.x = 0;
     control.orientation.y = 0;
     control.orientation.z = 1;
-    control.name = "rotate_y";
+    /*control.name = "rotate_y";
     control.interaction_mode = visualization_msgs::InteractiveMarkerControl::ROTATE_AXIS;
-    head_marker_.controls.push_back(control);
+    head_marker_.controls.push_back(control);*/
     control.name = "move_y";
     control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_AXIS;
     head_marker_.controls.push_back(control);
@@ -178,7 +248,9 @@ void HeadPlugin::processFeedback(
     static_pose_.rot.w = feedback->pose.orientation.w;
 
     
-    setEyePose(feedback->pose);
+    setHead(feedback->pose);
+    setEyes(feedback->pose);
+    //setEyePose(feedback->pose);
     //model_->SetWorldPose(static_pose_);
     server_.applyChanges();
 
