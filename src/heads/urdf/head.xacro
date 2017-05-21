@@ -4,7 +4,11 @@
   <xacro:property name="width" value="0.1" />
   <xacro:property name="height1" value="2" />
   <xacro:property name="mass" value="5" />
-  <xacro:property name="rad" value="0.1" />
+  <xacro:property name="rad" value="0.05" />
+  <xacro:property name="rad_y" value="0.05" />
+  <xacro:property name="rad_z" value="0.08" />
+  <xacro:property name="rad_x" value="0.03" />
+
   <xacro:property name="rad_small" value="0.01" />
   <xacro:include filename="$(find heads)/urdf/materials.xacro" />
   <xacro:include filename="$(find heads)/urdf/head.gazebo" />
@@ -129,7 +133,7 @@
   </link>
 
   <joint name="left_eye_joint" type="fixed">
-    <origin xyz="${rad} ${rad} ${rad}" rpy="0 0 0"/>
+    <origin xyz="${rad_x} ${rad_y} ${rad_z}" rpy="0 0 0"/>
     <parent link="head_roll_link"/>
     <child link="left_eye_link"/>
   </joint>
@@ -192,7 +196,7 @@
 
 
   <joint name="right_eye_joint" type="fixed">
-    <origin xyz="-${rad} ${rad} ${rad}" rpy="0 0 0"/>
+    <origin xyz="-${rad_x} ${rad_y} ${rad_z}" rpy="0 0 0"/>
     <parent link="head_roll_link"/>
     <child link="right_eye_link"/>
   </joint>
@@ -272,16 +276,68 @@
 
 
   <joint name="right_camera_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="1.57 1.57 -3.14"/>
+    <origin xyz="0 0 0" rpy="1.57 -1.57 -3.14"/>
     <parent link="right_eye_pitch_link"/>
     <child link="right_camera_link"/>
   </joint>
 
 
   <joint name="left_camera_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="1.57 1.57 -3.14"/>
+    <origin xyz="0 0 0" rpy="1.57 -1.57 -3.14"/>
     <parent link="left_eye_pitch_link"/>
     <child link="left_camera_link"/>
+  </joint>
+
+
+
+  <link name="left_sig_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.010"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+
+
+    <visual name='visual'>
+      <geometry>
+	    <box size="1 0.01 0.01"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+
+  </link>
+
+  <joint name="left_sig_joint" type="fixed">
+    <origin xyz="0.5 0 0" rpy="0 0 0"/>
+    <parent link="left_camera_link"/>
+    <child link="left_sig_link"/>
+  </joint>
+
+
+
+  <link name="right_sig_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.010"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+
+
+    <visual name='visual'>
+      <geometry>
+	    <box size="1 0.01 0.01"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+
+  </link>
+
+  <joint name="right_sig_joint" type="fixed">
+    <origin xyz="0.5 0 0" rpy="0 0 0"/>
+    <parent link="right_camera_link"/>
+    <child link="right_sig_link"/>
   </joint>
 
 
