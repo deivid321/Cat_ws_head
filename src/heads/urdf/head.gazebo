@@ -9,10 +9,10 @@
     </plugin>
   </gazebo>
 
-  <!-- 
+  
   <gazebo>
       <plugin name="head_control" filename="libhead_plugin.so"/>
-  </gazebo>-->
+  </gazebo>
 
 
   <!-- camera_link -->
