@@ -17,8 +17,8 @@ void HeadPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     links_ = _model->GetLinks();
 
     //ROS_INFO_STREAM("a: " << links_.size() << ", " << links_[0]->GetName() << ", " << links_[1]->GetName()<< ", " << links_[2]->GetName()
-<< links_.size() << ", " << links_[3]->GetName() << ", " << links_[4]->GetName()<< ", " << links_[5]->GetName()
-<< links_.size() << ", " << links_[6]->GetName() << ", " << links_[7]->GetName());
+//<< links_.size() << ", " << links_[3]->GetName() << ", " << links_[4]->GetName()<< ", " << links_[5]->GetName()
+//<< links_.size() << ", " << links_[6]->GetName() << ", " << links_[7]->GetName());
     CreateMarker();
 
     /*Send msgs to controller */
