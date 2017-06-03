@@ -1,4 +1,0 @@
-[35m[1mScanning dependencies of target head_plugin[0m
-[ 50%] [32mBuilding CXX object CMakeFiles/head_plugin.dir/src/head_plugin.cpp.o[0m
-[100%] [32m[1mLinking CXX shared library /home/deivydas/cat_ws_head/devel/.private/heads/lib/libhead_plugin.so[0m
-[100%] Built target head_plugin

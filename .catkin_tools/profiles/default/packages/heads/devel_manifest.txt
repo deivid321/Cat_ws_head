@@ -1,5 +1,0 @@
-heads
-/home/deivydas/cat_ws_head/devel/.private/heads/share/heads/cmake/headsConfig.cmake /home/deivydas/cat_ws_head/devel/share/heads/cmake/headsConfig.cmake
-/home/deivydas/cat_ws_head/devel/.private/heads/share/heads/cmake/headsConfig-version.cmake /home/deivydas/cat_ws_head/devel/share/heads/cmake/headsConfig-version.cmake
-/home/deivydas/cat_ws_head/devel/.private/heads/lib/libhead_plugin.so /home/deivydas/cat_ws_head/devel/lib/libhead_plugin.so
-/home/deivydas/cat_ws_head/devel/.private/heads/lib/pkgconfig/heads.pc /home/deivydas/cat_ws_head/devel/lib/pkgconfig/heads.pc
