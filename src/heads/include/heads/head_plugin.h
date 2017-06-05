@@ -25,6 +25,8 @@ namespace gazebo {
     ros::Publisher right_eye_pitch_pub_;
 
 
+    ros::Subscriber msg_sub_;
+
     sensor_msgs::JointState joint_msg_;
     tf::TransformBroadcaster broadcaster_;
     geometry_msgs::TransformStamped odom_trans_;
@@ -61,6 +63,7 @@ namespace gazebo {
     void setMarker();
     void setHead(const geometry_msgs::Pose);
     void setEyes(const geometry_msgs::Pose);
+    void chatterCallback(const geometry_msgs::Pose::ConstPtr& msg);
 
     /// \brief Pointer to the model.
 
