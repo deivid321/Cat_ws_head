@@ -33,9 +33,8 @@ def callback2(data):
     (rows, cols, channels) = cv_image.shape
     if cols > 60 and rows > 60:
         cv2.circle(cv_image, (50, 50), 10, 255)
-
-    cv2.imwrite('camera_image.jpeg', cv_image)
-    cv2.imshow("Image window", cv_image)
+    #print channels[0]
+    #cv2.imshow("Image window", cv_image)
     cv2.waitKey(3)
     ## TODO cv_image position will be your input
 
@@ -53,30 +52,33 @@ def listener():
     # embed()
     f = open('yy.csv', 'w')
     x_out = open('xxx.txt', 'w')
-    xx = -3
-    indX = 0
-    indY = 0
+    x = -3
+    num = 0
+    step = 0.5
     time.sleep(2)
-    while xx < 3:
-        z = -1
-        while z < 3:
-            p = Pose()
-            p.position.y = -3
-            p.position.x = xx
-            p.position.z = z
-            pub.publish(p)
-            time.sleep(2)
-            imgs.append(tmp_X)
-            print tmp_X
-            np.savetxt("outas.txt", tmp_X)
-            indX = indX + 1
-            rospy.loginfo("%d, %s, %s, %s", indY, p.position.x, p.position.y, p.position.z)
-            Y.append((indY, p.position.x, p.position.y, p.position.z))
-            tmpStr = "%d, %s, %s, %s\n" % (indY, p.position.x, p.position.y, p.position.z)
-            f.write(tmpStr)
-            indY = indY + 1
-            z = z + 5
-        xx = xx + 10
+    while x <= 3:
+        y = -4
+        while y <= -1:
+            z = -1
+            while z <= 3:
+                p = Pose()
+                p.position.y = y
+                p.position.x = x
+                p.position.z = z
+                pub.publish(p)
+                time.sleep(2)
+                imgs.append(tmp_X)
+                #print tmp_X
+                cv2.imwrite('images/' + str(num).zfill(5)  + '.jpeg', tmp_X)
+                #np.savetxt("outas.txt", tmp_X)
+                rospy.loginfo("%d, %s, %s, %s", num, p.position.x, p.position.y, p.position.z)
+                Y.append((num, p.position.x, p.position.y, p.position.z))
+                tmpStr = "%d, %s, %s, %s\n" % (num, p.position.x, p.position.y, p.position.z)
+                num = num + 1
+                f.write(tmpStr)
+                z = z + step
+            y = y + step
+        x = x + step
 
     X = np.array(imgs, dtype='float32')
     print X
