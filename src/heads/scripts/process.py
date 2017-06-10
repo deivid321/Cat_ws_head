@@ -13,6 +13,7 @@ from keras import backend as K
 from keras.optimizers import SGD
 from keras.callbacks import LearningRateScheduler, ModelCheckpoint
 import pandas as pd
+from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 
 NUM_CLASSES = 43
 IMG_SIZE = 400
@@ -41,25 +42,25 @@ def cnn_model():
                      input_shape=(IMG_SIZE, IMG_SIZE, 3),
                      activation='relu'))
     model.add(Conv2D(32, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.2))
+    #model.add(MaxPooling2D(pool_size=(2, 2)))
+    #model.add(Dropout(0.2))
 
-    model.add(Conv2D(64, (3, 3), padding='same',
-                     activation='relu'))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.2))
+    #model.add(Conv2D(64, (3, 3), padding='same',
+   #                  activation='relu'))
+    #model.add(Conv2D(64, (3, 3), activation='relu'))
+    #model.add(MaxPooling2D(pool_size=(2, 2)))
+    #model.add(Dropout(0.2))
 
-    model.add(Conv2D(128, (3, 3), padding='same',
-                     activation='relu'))
-    model.add(Conv2D(128, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
+   # model.add(Conv2D(128, (3, 3), padding='same',
+   #                  activation='relu'))
+   # model.add(Conv2D(128, (3, 3), activation='relu'))
+  #  model.add(MaxPooling2D(pool_size=(2, 2)))
     #model.add(Dropout(0.2))
 
     #model.add(Flatten())
     #model.add(Dense(512, activation='relu'))
-    ##model.add(Dropout(0.5))
-    ##model.add(Dense(NUM_CLASSES, activation='softmax'))
+    #model.add(Dropout(0.5))
+    #model.add(Dense(NUM_CLASSES, activation='softmax'))
     return model
 
 
@@ -80,9 +81,9 @@ for img_path in all_img_paths:
     # labels.append(label)
 
 X = np.array(imgs, dtype='float32')
-print X
+#print X
 Y = genfromtxt('yy.csv', delimiter=',')
-print Y
+#print Y
 
 model = cnn_model()
 
