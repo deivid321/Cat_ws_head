@@ -8,14 +8,14 @@ from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Conv2D
 from keras.layers.pooling import MaxPooling2D
-from keras.optimizers import SGD
+from keras.optimizers import SGD, RMSprop
 from keras import backend as K
 from keras.optimizers import SGD
 from keras.callbacks import LearningRateScheduler, ModelCheckpoint
 import pandas as pd
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
-
-NUM_CLASSES = 43
+from IPython import embed
+NUM_CLASSES = 4
 IMG_SIZE = 400
 
 
@@ -38,37 +38,28 @@ def preprocess_img(img):
 def cnn_model():
     model = Sequential()
 
-    model.add(Conv2D(32, (3, 3), padding='same',
+    model.add(Conv2D(16, (3, 3), padding='same', init="normal",
                      input_shape=(IMG_SIZE, IMG_SIZE, 3),
                      activation='relu'))
-    model.add(Conv2D(32, (3, 3), activation='relu'))
-    #model.add(MaxPooling2D(pool_size=(2, 2)))
-    #model.add(Dropout(0.2))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
 
-    #model.add(Conv2D(64, (3, 3), padding='same',
-   #                  activation='relu'))
-    #model.add(Conv2D(64, (3, 3), activation='relu'))
-    #model.add(MaxPooling2D(pool_size=(2, 2)))
-    #model.add(Dropout(0.2))
+    model.add(Conv2D(32, (3, 3), padding='same', init="normal",  # model.add(Conv2D(64, (3, 3), padding='same',
+                     activation='relu'))  # activation='relu'))
+    model.add(Conv2D(32, (3, 3), activation='relu', init="normal"))  # model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))  # model.add(MaxPooling2D(pool_size=(2, 2)))
+    # model.add(Dropout(0.2))		    #model.add(Dropout(0.2))
+    model.add(Conv2D(64, (3, 3), padding='same', init="normal",  # model.add(Conv2D(128, (3, 3), padding='same',
+                     activation='relu'))  # activation='relu'))
+    model.add(Conv2D(64, (3, 3), activation='relu', init="normal"))  # model.add(Conv2D(128, (3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
 
-   # model.add(Conv2D(128, (3, 3), padding='same',
-   #                  activation='relu'))
-   # model.add(Conv2D(128, (3, 3), activation='relu'))
-  #  model.add(MaxPooling2D(pool_size=(2, 2)))
-    #model.add(Dropout(0.2))
-
-    #model.add(Flatten())
-    #model.add(Dense(512, activation='relu'))
-    #model.add(Dropout(0.5))
-    #model.add(Dense(NUM_CLASSES, activation='softmax'))
+    model.add(Flatten())
+    model.add(Dense(8, activation='relu', init="normal"))
+    model.add(Dropout(0.25))
+    model.add(Dense(NUM_CLASSES, activation='linear', init="normal"))
     return model
 
-
-def lr_schedule(epoch):
-    return lr * (0.1 ** int(epoch / 10))
-
-
-root_dir = 'images/'
+root_dir = 'train_data/images/'
 imgs = []
 labels = []
 
@@ -82,20 +73,23 @@ for img_path in all_img_paths:
 
 X = np.array(imgs, dtype='float32')
 #print X
-Y = genfromtxt('yy.csv', delimiter=',')
+Y = genfromtxt('train_data/yy.csv', delimiter=',')
 #print Y
 
 model = cnn_model()
 
-# let's train the model using SGD + momentum
-lr = 0.01
-sgd = SGD(lr=lr, decay=1e-6, momentum=0.9, nesterov=True)
-model.compile(loss='categorical_crossentropy',
-              optimizer=sgd,
+# let's train the model using RMSprop
+lr = 0.001
+rms = RMSprop(lr=lr, rho=0.9)
+model.compile(loss='mean_squared_error',
+              optimizer=rms,
               metrics=['accuracy'])
 
-batch_size = 32
-epochs = 30
+batch_size = 8
+epochs = 4
+
+model.summary()
+#embed()
 
 model.fit(X, Y,
           batch_size=batch_size,
@@ -108,7 +102,6 @@ model.fit(X, Y,
 # Load test dataset
 X_test = []
 y_test = genfromtxt('tarkim_test/yy.csv', delimiter=',')
-i = 0
 root_dir = 'tarkim_test/images/'
 imgs = []
 
@@ -120,7 +113,7 @@ X_test = np.array(X_test)
 y_test = np.array(y_test)
 
 # predict and evaluate
-y_pred = model.predict_classes(X_test)
+y_pred = model.predict(X_test)
 acc = np.sum(y_pred == y_test) / np.size(y_pred)
 print("Test accuracy = {}".format(acc))
 # Make one hot targets

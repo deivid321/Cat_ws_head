@@ -1,0 +1,8 @@
+prefix=/home/deivydas/cat_ws_head/devel/.private/heads
+
+Name: heads
+Description: Description of heads
+Version: 0.0.0
+Cflags: -I/home/deivydas/cat_ws_head/src/heads/include
+Libs: -L/home/deivydas/cat_ws_head/devel/.private/heads/lib 
+Requires: 

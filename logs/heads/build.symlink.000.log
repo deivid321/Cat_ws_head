@@ -1,0 +1,4 @@
+Symlinking /home/deivydas/cat_ws_head/devel/share/heads/cmake/headsConfig.cmake
+Symlinking /home/deivydas/cat_ws_head/devel/share/heads/cmake/headsConfig-version.cmake
+Symlinking /home/deivydas/cat_ws_head/devel/lib/libhead_plugin.so
+Symlinking /home/deivydas/cat_ws_head/devel/lib/pkgconfig/heads.pc

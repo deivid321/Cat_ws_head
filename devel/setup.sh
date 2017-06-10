@@ -1,0 +1,1 @@
+/home/deivydas/cat_ws_head/devel/.private/catkin_tools_prebuild/setup.sh

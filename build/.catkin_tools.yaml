@@ -1,0 +1,6 @@
+devel_space: /home/deivydas/cat_ws_head/devel
+install: false
+install_space: /home/deivydas/cat_ws_head/install
+profile: default
+source_space: /home/deivydas/cat_ws_head/src
+workspace: /home/deivydas/cat_ws_head
