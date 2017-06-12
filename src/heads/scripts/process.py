@@ -12,8 +12,9 @@ from keras.optimizers import SGD, RMSprop
 import keras as keras
 from keras.optimizers import SGD
 
-NUM_CLASSES = 4
+NUM_CLASSES = 3
 IMG_SIZE = 400
+
 
 def preprocess_img(img):
     # central square crop
@@ -35,17 +36,17 @@ def cnn_model():
     model.add(ZeroPadding2D((1, 1), input_shape=(IMG_SIZE, IMG_SIZE, 3), trainable='false'))
     model.add(Convolution2D(32, 3, 3, activation='relu', trainable='false', kernel_regularizer=keras.regularizers.l2(0.01)))
     model.add(ZeroPadding2D((1, 1), trainable='false'))
-    model.add(Convolution2D(32, 3, 3, activation='relu',trainable='false', kernel_regularizer=keras.regularizers.l2(0.01)))
+    model.add(Convolution2D(32, 3, 3, activation='relu', trainable='false', kernel_regularizer=keras.regularizers.l2(0.01)))
     model.add(MaxPooling2D((2, 2), strides=(2, 2), trainable='false'))
 
     model.add(ZeroPadding2D((1, 1), trainable='false'))
-    model.add(Convolution2D(128, 3, 3, activation='relu',trainable='false', kernel_regularizer=keras.regularizers.l2(0.01)))
+    model.add(Convolution2D(128, 3, 3, activation='relu', trainable='false', kernel_regularizer=keras.regularizers.l2(0.01)))
     model.add(ZeroPadding2D((1, 1), trainable='false'))
     model.add(Convolution2D(64, 3, 3, activation='relu', trainable='false', kernel_regularizer=keras.regularizers.l2(0.01)))
 
     model.add(Dense(8, activation='relu', trainable='false', kernel_regularizer=keras.regularizers.l2(0.01)))
     model.add(Dropout(0.5))
-    model.add(Dense(NUM_CLASSES, activation='linear'))
+    model.add(Dense(NUM_CLASSES, activation='linear', init="normal"))
 
     return model
 
@@ -63,7 +64,7 @@ for img_path in all_img_paths:
 X = np.array(imgs, dtype='float32')
 # print X
 Y = genfromtxt('train_data/yy.csv', delimiter=',')
-# print Y
+Y = np.array(Y)
 
 model = cnn_model()
 sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
@@ -73,20 +74,19 @@ rms = RMSprop(lr=lr, rho=0.9)
 # model.compile(loss='mean_squared_error',
 #              optimizer=rms,
 #              metrics=['accuracy'])
-model.compile(optimizer=sgd, loss='categorical_crossentropy') #for vgg model
+model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])  # for vgg model
 batch_size = 8
 epochs = 4
 
 model.summary()
 # embed()
 
-#model.fit(X, Y,
-#        batch_size=batch_size,
-#        epochs=epochs,
-#        verbose=1,
-#        validation_split=0.2
-#       )
-
+model.fit(X, Y,
+          batch_size=batch_size,
+          epochs=epochs,
+          verbose=1,
+          validation_split=0.2
+          )
 
 # Load test dataset
 X_test = []
@@ -98,7 +98,6 @@ all_img_paths = glob.glob(os.path.join(root_dir, '*.jpeg'))
 for img_path in all_img_paths:
     imgs.append(preprocess_img(io.imread(img_path)))
 
-
 X_test = np.array(imgs, dtype='float32')
 Y_test = np.array(Y_test)
 
@@ -106,4 +105,3 @@ Y_test = np.array(Y_test)
 Y_pred = model.predict(X_test)
 acc = np.sum(Y_pred == Y_test) / np.size(Y_pred)
 print("Test accuracy = {}".format(acc))
-

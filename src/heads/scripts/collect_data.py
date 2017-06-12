@@ -54,30 +54,30 @@ def listener():
     x_out = open('xxx.txt', 'w')
     x = -3
     num = 0
-    step = 0.5
+    step = 0.20
     time.sleep(2)
     while x <= 3:
         y = -4
-        while y <= -1:
-            z = -1
-            while z <= 3:
-                p = Pose()
-                p.position.y = y
-                p.position.x = x
-                p.position.z = z
-                pub.publish(p)
-                time.sleep(2)
-                imgs.append(tmp_X)
-                #print tmp_X
-                cv2.imwrite('images/' + str(num).zfill(5)  + '.jpeg', tmp_X)
-                #np.savetxt("outas.txt", tmp_X)
-                rospy.loginfo("%d, %s, %s, %s", num, p.position.x, p.position.y, p.position.z)
-                Y.append((num, p.position.x, p.position.y, p.position.z))
-                tmpStr = "%d, %s, %s, %s\n" % (num, p.position.x, p.position.y, p.position.z)
-                num = num + 1
-                f.write(tmpStr)
-                z = z + step
-            y = y + step
+        #while y <= -1:
+        z = -1
+        while z <= 3:
+            p = Pose()
+            p.position.y = y
+            p.position.x = x
+            p.position.z = z
+            pub.publish(p)
+            time.sleep(3)
+            imgs.append(tmp_X)
+            #print tmp_X
+            cv2.imwrite('images/' + str(num).zfill(5)  + '.jpeg', tmp_X)
+            #np.savetxt("outas.txt", tmp_X)
+            rospy.loginfo("%d, %s, %s, %s", num, p.position.x, p.position.y, p.position.z)
+            Y.append((num, p.position.x, p.position.y, p.position.z))
+            tmpStr = "%s, %s, %s\n" % (p.position.x, p.position.y, p.position.z)
+            num = num + 1
+            f.write(tmpStr)
+            z = z + step
+        y = y + step
         x = x + step
 
     X = np.array(imgs, dtype='float32')
