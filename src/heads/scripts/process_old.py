@@ -16,19 +16,22 @@ import pandas as pd
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from IPython import embed
 NUM_CLASSES = 3
-IMG_SIZE = 400
+IMG_SIZE = 100
 
-
+sk = 0
 def preprocess_img(img):
     # central square crop
-    min_side = 200
+    min_side = 150
     centre = img.shape[0] // 2, img.shape[1] // 2
     img = img[centre[0] - min_side // 2:centre[0] + min_side // 2,
           centre[1] - min_side // 2:centre[1] + min_side // 2,
           :]
     # rescale to standard size
     img = transform.resize(img, (IMG_SIZE, IMG_SIZE))
-    # io.imsave('work.jpeg', img)
+    global sk
+    stri = 'tmp/work'+str(sk)+'.jpeg'
+    #io.imsave(stri, img)
+    sk = sk + 1
     # roll color axis to axis 0
     #img = np.rollaxis(img, -1)
 
@@ -38,77 +41,42 @@ def preprocess_img(img):
 def cnn_model():
     model = Sequential()
 
-    model.add(Conv2D(8, (3, 3), padding='same', init="normal",
+    model.add(Conv2D(32, (3, 3), padding='same',
                      input_shape=(IMG_SIZE, IMG_SIZE, 3),
                      activation='relu'))
-    model.add(Conv2D(8, (3, 3), activation='relu', init="normal"))
-    model.add(ZeroPadding2D((1, 1)))
+    model.add(Conv2D(32, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.2))
 
-    model.add(Conv2D(8, (3, 3), padding='same', init="normal",
+    model.add(Conv2D(64, (3, 3), padding='same',
                      activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Conv2D(8, (3, 3), activation='relu', init="normal"))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-
-    model.add(Conv2D(16, (3, 3), padding='same', init="normal",
-                     activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Conv2D(16, (3, 3), activation='relu', init="normal"))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-
-    model.add(Conv2D(16, (3, 3), padding='same', init="normal",
-                     activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Conv2D(16, (3, 3), activation='relu', init="normal"))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-
-    model.add(Conv2D(32, (3, 3), padding='same',init="normal",
-                     activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Conv2D(32, (3, 3), activation='relu', init="normal"))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.2))
 
-    model.add(Conv2D(64, (3, 3), padding='same', init="normal",
+    model.add(Conv2D(128, (3, 3), padding='same',
                      activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Conv2D(64, (3, 3), activation='relu', init="normal"))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.2))
-
-    model.add(Conv2D(64, (3, 3), padding='same', init="normal",
-                     activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Conv2D(64, (3, 3), activation='relu', init="normal"))
+    model.add(Conv2D(128, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.2))
 
     model.add(Flatten())
-    model.add(Dense(64, activation='relu', init="normal"))
-    model.add(Dropout(0.25))
-    model.add(Dense(8, activation='relu', init="normal"))
-    model.add(Dropout(0.25))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dropout(0.5))
     model.add(Dense(NUM_CLASSES, activation='linear', init="normal"))
     return model
 
-
-def lr_schedule(epoch):
-    return lr * (0.1 ** int(epoch / 10))
-
-
+# val_loss: 0.3383  val_loss: 0.3167 su batch=32 val_loss: 0.2491
 root_dir = 'images/'
 imgs = []
 labels = []
 
-all_img_paths = glob.glob(os.path.join(root_dir, '*.jpeg'))
+all_img_paths = sorted(glob.glob(os.path.join(root_dir, '*.jpeg')))
+paths = sorted(all_img_paths)
 np.random.shuffle(all_img_paths)
-for img_path in all_img_paths:
+for img_path in paths:
     img = preprocess_img(io.imread(img_path))
-    # label = get_class(img_path)
     imgs.append(img)
-    # labels.append(label)
 
 
 
@@ -127,7 +95,7 @@ model.compile(loss='mean_squared_error',
               optimizer=rms,
               metrics=['accuracy'])
 
-batch_size = 8
+batch_size = 32
 epochs = 90
 
 #embed()
@@ -137,7 +105,8 @@ model.fit(X, Y,
           batch_size=batch_size,
           epochs=epochs,
           verbose=1,
-          validation_split=0.2
+          validation_split=0.2,
+          callbacks=[ModelCheckpoint('model.h5', save_best_only=True)]
           )
 #model.save("v1.h5")
 
@@ -148,7 +117,8 @@ i = 0
 root_dir = 'tarkim_test/images/'
 imgs = []
 
-all_img_paths = glob.glob(os.path.join(root_dir, '*.jpeg'))
+all_img_paths = sorted(glob.glob(os.path.join(root_dir, '*.jpeg')))
+paths = sorted(all_img_paths)
 for img_path in all_img_paths:
     X_test.append(preprocess_img(io.imread(img_path)))
 
