@@ -21,7 +21,7 @@ IMG_SIZE = 100
 sk = 0
 def preprocess_img(img):
     # central square crop
-    min_side = 150
+    min_side = 200
     centre = img.shape[0] // 2, img.shape[1] // 2
     img = img[centre[0] - min_side // 2:centre[0] + min_side // 2,
           centre[1] - min_side // 2:centre[1] + min_side // 2,
@@ -30,7 +30,7 @@ def preprocess_img(img):
     img = transform.resize(img, (IMG_SIZE, IMG_SIZE))
     global sk
     stri = 'tmp/work'+str(sk)+'.jpeg'
-    #io.imsave(stri, img)
+    io.imsave(stri, img)
     sk = sk + 1
     # roll color axis to axis 0
     #img = np.rollaxis(img, -1)
@@ -67,7 +67,7 @@ def cnn_model():
     return model
 
 # val_loss: 0.3383  val_loss: 0.3167 su batch=32 val_loss: 0.2491
-root_dir = 'images/'
+root_dir = 'train_data/Be_asiu_trecias_modelis/images/'
 imgs = []
 labels = []
 
@@ -79,11 +79,9 @@ for img_path in paths:
     imgs.append(img)
 
 
-
-
 X = np.array(imgs, dtype='float32')
 #print X
-Y = genfromtxt('yy.csv', delimiter=',')
+Y = genfromtxt('train_data/Be_asiu_trecias_modelis/yy.csv', delimiter=',')
 #print Y
 
 model = cnn_model()
@@ -96,7 +94,7 @@ model.compile(loss='mean_squared_error',
               metrics=['accuracy'])
 
 batch_size = 32
-epochs = 90
+epochs = 30
 
 #embed()
 

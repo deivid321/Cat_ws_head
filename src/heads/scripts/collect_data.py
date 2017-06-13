@@ -51,7 +51,6 @@ def listener():
     imgs = []
     # embed()
     f = open('yy.csv', 'w')
-    x_out = open('xxx.txt', 'w')
     x = -3
     num = 0
     step = 0.20

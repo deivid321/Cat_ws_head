@@ -20,13 +20,13 @@
 
     <collision name='collision'>
       <geometry>
-        <mesh filename="package://heads/models/torso.dae"/>
+        <mesh filename="package://heads/models/new_model2/torso.dae"/>
       </geometry>
     </collision>
 
     <visual name='visual'>
       <geometry>
-        <mesh filename="package://heads/models/torso.dae"/>
+        <mesh filename="package://heads/models/new_model2/torso.dae"/>
       </geometry>
       <material name="black"/>
     </visual>
@@ -84,14 +84,14 @@
     <collision>
      <origin xyz="0 -1.5 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://heads/models/head/head.dae"/>
+        <mesh filename="package://heads/models/new_model2/head/head.dae"/>
       </geometry>
     </collision>
 
     <visual>
      <origin xyz="0 -1.5 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://heads/models/head/head.dae"/>
+        <mesh filename="package://heads/models/new_model2/head/head.dae"/>
       </geometry>
       <material name="orange"/>
     </visual>
@@ -289,7 +289,7 @@
   </joint>
 
 
-
+<!--
   <link name="left_sig_link">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -313,9 +313,9 @@
     <parent link="left_camera_link"/>
     <child link="left_sig_link"/>
   </joint>
+  -->
 
-
-
+  <!--
   <link name="right_sig_link">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -339,7 +339,7 @@
     <parent link="right_camera_link"/>
     <child link="right_sig_link"/>
   </joint>
-
+  -->
 
   <transmission name="head_yaw_joint_tran">
     <type>transmission_interface/SimpleTransmission</type>
